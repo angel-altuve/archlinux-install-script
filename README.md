@@ -1,5 +1,4 @@
-# archlinux installation scripts
-
+# archlinux install script
 
 ## preview 
 
@@ -15,7 +14,7 @@ sudo pacman -S dialog git
 **note: make sure you don't use the root user**
 
 ``` bash
-https://github.com/angel-altuve/install-archlinux-scripts.git scripts
+git clone https://github.com/angel-altuve/archlinux-install-script.git scripts
 cd scripts
 ./install
 ```

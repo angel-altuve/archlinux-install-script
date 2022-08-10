@@ -24,7 +24,7 @@ echo "################################################################"
 sudo pacman --noconfirm --needed -Syu dialog || error "Error syncing the repos."
 
 welcome() { \
-    dialog --colors --title "\Z7\ZbInstalling!" --msgbox "\Z4This is a script that will install what I sarcastically call DTOS (DT's operating system).  It's really just an installation script for those that want to try out my tiling window manager configurations and associated programs.  You will be asked to enter your sudo password at various points during this installation, so stay near the computer.\\n\\n-DT (Derek Taylor, aka DistroTube)" 16 60
+    dialog --colors --title "\Z7\ZbInstalling!" --msgbox "\Z4This is a script that will install what I sarcastically call(operating system).  It's really just an installation script for those that want to try out my tiling window manager configurations and associated programs.  You will be asked to enter your sudo password at various points during this installation" 16 60
 }
 
 welcome || error "User choose to exit."
@@ -110,7 +110,7 @@ cp ~/dotfiles/.moc ~/
 cp ~/dotfiles/.nano ~/
 cp ~/dotfiles/.nanorc ~/
 cp ~/dotfiles/.tmux ~/
-ln -s -f .tmux/.tmux.conf
+ln -s -f ~/.tmux/.tmux.conf ~/
 cp ~/dotfiles/.tmux.conf.local ~/
 cp ~/dotfiles/.bashrc ~/
 cp ~/dotfiles/.bash_profile ~/

@@ -16,14 +16,16 @@
 - [[#adding-keyservers-to-gpgconf][Adding keyservers to gpg.conf.]]
 - [[#receiving-the-pgp-key][Receiving the PGP key]]
 - [[#install-the-packages-from-repositories][Install the packages from repositories]]
-- [[#copy-configs-over-from-etcdtos-into-home][Copy configs over from /etc/dtos into $HOME]]
+- [[#copy-configs-over-from-dotfiles-into-home][Copy configs over from dotfiles into $HOME]]
 - [[#install-other-package][Install other package]]
 - [[#install-doom-emacs][Install Doom Emacs]]
 - [[#copy-pacman-hooks][Copy pacman hooks]]
 - [[#compiling-xmonad][Compiling xmonad]]
 - [[#compiling-the-xmonadctl-script][Compiling the xmonadctl script]]
 - [[#set-default-user-shell][Set default USER shell]]
+- [[#install-paru][install paru]]
 - [[#message-stating-that-the-installation-is-complete][Message stating that the installation is complete!]]
+- [[#message-stating-that-the-installation-is-complete-1][Message stating that the installation is complete!]]
 
 * Shebang plus comments
 #+begin_src bash :shebang "#!/usr/bin/env bash"
@@ -159,10 +161,7 @@ All packages listed are either in the standard Arch repos or in the DTOS repos. 
 sudo pacman --needed --ask 4 -Sy - < pkglist.txt || error "Failed to install required packages."
 #+end_src
 
-* Copy configs over from /etc/dtos into $HOME
-While it would be easier to make packages that could install DTOS configs directly to the appropriate places in the $HOME folder, pacman does not allow for this.  Pacman is not allowed to touch $HOME ever!  The better way to do this is to install the configs in /etc/skel which is the standard directory to place such config files, but on many distros (for ex. Manjaro and Arco) /etc/skel is already used to store the distro's own config files.  So to avoid conflicts, all DTOS configs are placed in /etc/dtos and then copied over to $HOME.  A backup of config is created.  BEWARE!
-
-=NOTE:= The /etc/dtos directory contains files and directories that are automatically copied over to a new user's home directory when such user is created by the 'useradd' or the 'adduser' program, depending on your Linux distro.
+* Copy configs over from dotfiles into $HOME
 #+begin_src bash
 echo "################################################################"
 echo "## Copying DTOS configuration files from /etc/dtos into \$HOME ##"
@@ -190,7 +189,11 @@ find $HOME/.local/bin -type f -print0 | xargs -0 chmod 775
 
 * Install other package
 #+begin_src bash
-sudo pacman -Sy dunst noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra npm nodejs moc neofetch htop github-cli acpid duf ncdu telegram-desktop wget curl tmux sd vifm ueberzug diff-so-fancy gvfs xmonad xmobar xmonad-contrib libx11 libxft libxinerama libxrandr libxinerama htop  fish
+echo "############################################################"
+echo "## Installing other package. This may take a few minutes. ##"
+echo "############################################################"
+
+sudo pacman -Sy dtos-xmonad dunst noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra npm nodejs moc neofetch htop github-cli acpid duf ncdu telegram-desktop wget curl tmux sd vifm ueberzug diff-so-fancy gvfs xmonad xmobar xmonad-contrib libx11 libxft libxinerama libxrandr libxinerama htop fish || error "failed"
 #+end_src
 * Install Doom Emacs
 #+begin_src bash
@@ -242,19 +245,27 @@ xmonadctl_compile || echo "Compiling the xmonadctl script failed!"
                     \nLogging out is required for this take effect."
 #+end_src
 
+* install paru
+#+begin_src bash
+cd ~ && git clone https://aur.archlinux.org/paru.git && cd paru
+makepkg -si
+rm -rf ../paru || error "failed delete paru folder"
+#+begin_src
+* Message stating that the installation is complete!
+#+begin_src bash
 
 * Message stating that the installation is complete!
 #+begin_src bash
 echo "##############################"
-echo "## DTOS has been installed! ##"
+echo "##  has been installed! ##"
 echo "##############################"
 
 while true; do
-    read -p "Do you want to reboot to get your dtos? [Y/n] " yn
+    read -p "you want to start xmonad? [Y/n] " yn
     case $yn in
-        [Yy]* ) startx;;
+        [Yy]* ) startx .xinitrc;;
         [Nn]* ) break;;
-        "" ) startx;;
+        "" ) startx .xinitrc;;
         * ) echo "Please answer yes or no.";;
     esac
 done

@@ -13,15 +13,7 @@ bluez-utils
 cups
 dmenu-distrotube
 dmscripts
-dtos-alacritty
-dtos-backgrounds
-dtos-bash
-dtos-conky
-dtos-dmscripts
-dtos-doom
-dtos-local-bin
 dtos-sounds
-dtos-xresources
 elementary-icon-theme
 emacs-nativecomp
 exa
@@ -59,6 +51,7 @@ xdg-user-dirs
 xdotool
 xf86-video-intel
 xorg
+xorg-xmessage
 xorg-xinit
 xterm
 xwallpaper

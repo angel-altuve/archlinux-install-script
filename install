@@ -79,7 +79,7 @@ addkeyserver || error "Error adding keyservers to /etc/pacman.d/gnupg/gpg.conf"
 receive_key() { \
     local _pgpkey="A62D56CABD8DD76E"
     echo "#####################################"
-    echo "## Adding PGP key $_pgpkey ##"
+    echo "## Adding PGP key $_pgpkey         ##"
     echo "#####################################"
     sudo pacman-key --recv-key $_pgpkey
     sudo pacman-key --lsign-key $_pgpkey
@@ -90,8 +90,15 @@ receive_key || error "Error receiving PGP key $_pgpkey"
 # Let's install each package listed in the pkglist.txt file.
 sudo pacman --needed --ask 4 -Sy - < pkglist.txt || error "Failed to install required packages."
 
+echo "############################################################"
+echo "## Installing other package. This may take a few minutes. ##"
+echo "############################################################"
+
+sudo pacman -Sy curl dunst noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra npm nodejs moc neofetch htop github-cli acpid duf ncdu telegram-desktop wget tmux sd vifm ueberzug diff-so-fancy gvfs xmonad xmobar xmonad-contrib libx11 libxinerama libxrandr libxinerama htop fish || error "failed"
+
+
 echo "################################################################"
-echo "## Copying DTOS configuration files from /etc/dtos into \$HOME ##"
+echo "##               Copying dotfiles configuration               ##"
 echo "################################################################"
 cd ~ && git clone https://github.com/angel-altuve/dotfiles.git
 cp -r ~/dotfiles/.config ~/
@@ -103,18 +110,14 @@ cp ~/dotfiles/.moc ~/
 cp ~/dotfiles/.nano ~/
 cp ~/dotfiles/.nanorc ~/
 cp ~/dotfiles/.tmux ~/
+ln -s -f .tmux/.tmux.conf
 cp ~/dotfiles/.tmux.conf.local ~/
 cp ~/dotfiles/.bashrc ~/
 cp ~/dotfiles/.bash_profile ~/
 
+
 # Change all scripts in .local/bin to be executable.
 find $HOME/.local/bin -type f -print0 | xargs -0 chmod 775
-
-echo "############################################################"
-echo "## Installing other package. This may take a few minutes. ##"
-echo "############################################################"
-
-sudo pacman -Sy dtos-xmonad dunst noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra npm nodejs moc neofetch htop github-cli acpid duf ncdu telegram-desktop wget curl tmux sd vifm ueberzug diff-so-fancy gvfs xmonad xmobar xmonad-contrib libx11 libxft libxinerama libxrandr libxinerama htop fish || error "failed"
 
 echo "#########################################################"
 echo "## Installing Doom Emacs. This may take a few minutes. ##"
@@ -124,8 +127,9 @@ git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
 ~/.emacs.d/bin/doom sync
 
 [ ! -d /etc/pacman.d/hooks ] && sudo mkdir /etc/pacman.d/hooks
-sudo cp /etc/dtos/.config/xmonad/pacman-hooks/recompile-xmonad.hook /etc/pacman.d/hooks/
-sudo cp /etc/dtos/.config/xmonad/pacman-hooks/recompile-xmonadh.hook /etc/pacman.d/hooks/
+sudo cp ~/dotfiles/xmonad/.config/xmonad/pacman-hooks/recompile-xmonad.hook /etc/pacman.d/hooks/
+sudo cp ~/dotfiles/xmonad/.config/xmonad/pacman-hooks/recompile-xmonadh.hook /etc/pacman.d/hooks/
+
 
 xmonad_recompile() { \
     echo "########################"
@@ -149,6 +153,13 @@ xmonadctl_compile || echo "Compiling the xmonadctl script failed!"
             echo -e "$choice has been set as your default USER shell. \
                     \nLogging out is required for this take effect."
 
+  echo "####################################"
+  echo "##          install paru          ##"
+  echo "####################################"
+       cd ~ && git clone https://aur.archlinux.org/paru.git && cd paru
+       makepkg -si
+       rm -rf ../paru || error "failed delete paru folder"
+
 echo "##############################"
 echo "##  has been installed! ##"
 echo "##############################"
@@ -156,9 +167,9 @@ echo "##############################"
 while true; do
     read -p "you want to start xmonad? [Y/n] " yn
     case $yn in
-        [Yy]* ) startx;;
+        [Yy]* ) startx ~/.xinitrc;;
         [Nn]* ) break;;
-        "" ) startx;;
+        "" ) startx ~/.xinitrc;;
         * ) echo "Please answer yes or no.";;
     esac
 done

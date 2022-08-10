@@ -189,8 +189,8 @@ find $HOME/.local/bin -type f -print0 | xargs -0 chmod 775
 #+end_src
 
 * Install other package
-#+begin_src haskell
-sudo pacman -Sy dunst noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra npm nodejs moc neofetch htop github-cli acpid duf ncdu telegram-desktop wget curl tmux sd vifm ueberzug diff-so-fancy gvfs
+#+begin_src bash
+sudo pacman -Sy dunst noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra npm nodejs moc neofetch htop github-cli acpid duf ncdu telegram-desktop wget curl tmux sd vifm ueberzug diff-so-fancy gvfs xmonad xmobar xmonad-contrib libx11 libxft libxinerama libxrandr libxinerama htop  fish
 #+end_src
 * Install Doom Emacs
 #+begin_src bash

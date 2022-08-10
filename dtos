@@ -110,7 +110,7 @@ cp ~/dotfiles/.bash_profile ~/
 # Change all scripts in .local/bin to be executable.
 find $HOME/.local/bin -type f -print0 | xargs -0 chmod 775
 
-sudo pacman -Sy dunst noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra npm nodejs moc neofetch htop github-cli acpid duf ncdu telegram-desktop wget curl tmux sd vifm ueberzug diff-so-fancy gvfs
+sudo pacman -Sy dunst noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra npm nodejs moc neofetch htop github-cli acpid duf ncdu telegram-desktop wget curl tmux sd vifm ueberzug diff-so-fancy gvfs xmonad xmobar xmonad-contrib libx11 libxft libxinerama libxrandr libxinerama htop  fish
 
 echo "#########################################################"
 echo "## Installing Doom Emacs. This may take a few minutes. ##"

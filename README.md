@@ -4,6 +4,9 @@
 
 ![https://github.com/angel-altuve/dotfiles/blob/main/screenshots/xmonad.png?raw=true](https://github.com/angel-altuve/dotfiles/blob/main/screenshots/xmonad.png?raw=true)
 
+
+**This script must be executed after arch has been installed, so it is not a pre-install script but a post-install script.**
+
 ## dependencies
 
 ``` bash

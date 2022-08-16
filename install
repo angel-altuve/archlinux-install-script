@@ -94,7 +94,7 @@ echo "############################################################"
 echo "## Installing other package. This may take a few minutes. ##"
 echo "############################################################"
 
-sudo pacman -Sy curl dunst noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra npm nodejs moc neofetch htop github-cli acpid duf ncdu telegram-desktop wget tmux sd vifm ueberzug diff-so-fancy gvfs xmonad xmobar xmonad-contrib libx11 libxinerama libxrandr libxinerama htop fish || error "failed"
+sudo pacman -Sy curl dunst noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra npm nodejs moc neofetch htop github-cli acpid duf ncdu telegram-desktop wget tmux sd vifm ffmpegthumbnailer ueberzug diff-so-fancy gvfs xmonad xmobar xmonad-contrib libx11 libxinerama libxrandr libxinerama htop fish || error "failed"
 
 
 echo "################################################################"
@@ -109,9 +109,6 @@ cp ~/dotfiles/.Xmodmap ~/
 cp ~/dotfiles/.moc ~/
 cp ~/dotfiles/.nano ~/
 cp ~/dotfiles/.nanorc ~/
-cp ~/dotfiles/.tmux ~/
-ln -s -f ~/.tmux/.tmux.conf ~/
-cp ~/dotfiles/.tmux.conf.local ~/
 cp ~/dotfiles/.bashrc ~/
 cp ~/dotfiles/.bash_profile ~/
 

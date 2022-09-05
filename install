@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 # WARNING: Run this script at your own risk.
-
-
+#
 if [ "$(id -u)" = 0 ]; then
     echo "##################################################################"
     echo "This script MUST NOT be run as root user since it makes changes"
@@ -14,8 +13,10 @@ if [ "$(id -u)" = 0 ]; then
     exit 1
 fi
 
-error() { \
-    clear; printf "ERROR:\\n%s\\n" "$1" >&2; exit 1;
+error() {
+    clear
+    printf "ERROR:\\n%s\\n" "$1" >&2
+    exit 1
 }
 
 echo "################################################################"
@@ -23,50 +24,57 @@ echo "## Syncing the repos and installing 'dialog' if not installed ##"
 echo "################################################################"
 sudo pacman --noconfirm --needed -Syu dialog || error "Error syncing the repos."
 
-welcome() { \
+welcome() {
     dialog --colors --title "\Z7\ZbInstalling!" --msgbox "\Z4This is a script that will install what I sarcastically call(operating system).  It's really just an installation script for those that want to try out my tiling window manager configurations and associated programs.  You will be asked to enter your sudo password at various points during this installation" 16 60
 }
 
 welcome || error "User choose to exit."
 
-speedwarning() { \
-    dialog --colors --title "\Z7\ZbInstalling!" --yes-label "Continue" --no-label "Exit" --yesno  "\Z4WARNING! The ParallelDownloads option is not enabled in /etc/pacman.conf. This may result in slower installation speeds. Are you sure you want to continue?" 16 60 || error "User choose to exit."
+speedwarning() {
+    dialog --colors --title "\Z7\ZbInstalling!" --yes-label "Continue" --no-label "Exit" --yesno "\Z4WARNING! The ParallelDownloads option is not enabled in /etc/pacman.conf. This may result in slower installation speeds. Are you sure you want to continue?" 16 60 || error "User choose to exit."
 }
 
-distrowarning() { \
-    dialog --colors --title "\Z7\ZbInstalling!" --yes-label "Continue" --no-label "Exit" --yesno  "\Z4WARNING! While this script works on all Arch based distros, some distros choose to package certain things that we also package, please look at the package list and remove conflicts manually. Are you sure you want to continue?" 16 60 || error "User choose to exit."
+distrowarning() {
+    dialog --colors --title "\Z7\ZbInstalling!" --yes-label "Continue" --no-label "Exit" --yesno "\Z4WARNING! While this script works on all Arch based distros, some distros choose to package certain things that we also package, please look at the package list and remove conflicts manually. Are you sure you want to continue?" 16 60 || error "User choose to exit."
 }
 
 grep -qs "#ParallelDownloads" /etc/pacman.conf && speedwarning
 grep -qs "ID=arch" /etc/os-release || distrowarning
 
-localewarning() { \
-        [[ -z $LANG || -z $LC_CTYPE ]] && \
+localewarning() {
+    [[ -z $LANG || -z $LC_CTYPE ]] &&
         dialog --colors --title "\Z7\ZbInstalling!" --msgbox "\Z4WARNING! Your locales have not been set! Please check that both the LANG and LC_CTYPE variables are set to the appropriate locale in /etc/locale.conf (NOTE: they should both be the same). Run 'sudo locale-gen', reboot and run the script again. You can reference the Arch Wiki while doing so: https://wiki.archlinux.org/title/locale" 16 60 && error "Your locales have not been set! Please check that both the LANG and LC_CTYPE variables are set to the appropriate locale in /etc/locale.conf (NOTE: they should both be the same). Run 'sudo locale-gen', reboot and run the script again. You can reference the Arch Wiki while doing so: https://wiki.archlinux.org/title/locale"
 }
 
 localewarning
 
-lastchance() { \
+lastchance() {
     dialog --colors --title "\Z7\ZbInstalling!" --msgbox "\Z4WARNING! installation script is currently in public beta testing. There are almost certainly errors in it; therefore, it is strongly recommended that you not install this on production machines. It is recommended that you try this out in either a virtual machine or on a test machine." 16 60
 
-    dialog --colors --title "\Z7\ZbAre You Sure You Want To Do This?" --yes-label "Begin Installation" --no-label "Exit" --yesno "\Z4Shall we begin installing?" 8 60 || { clear; exit 1; }
+    dialog --colors --title "\Z7\ZbAre You Sure You Want To Do This?" --yes-label "Begin Installation" --no-label "Exit" --yesno "\Z4Shall we begin installing?" 8 60 || {
+        clear
+        exit 1
+    }
 }
 
 lastchance || error "User choose to exit."
 
-addrepo() { \
+addrepo() {
     echo "#########################################################"
     echo "## Adding the DTOS core repository to /etc/pacman.conf ##"
     echo "#########################################################"
     grep -qxF "[dtos-core-repo]" /etc/pacman.conf ||
-        ( echo " "; echo "[dtos-core-repo]"; echo "SigLevel = Required DatabaseOptional"; \
-        echo "Server = https://gitlab.com/dtos/\$repo/-/raw/main/\$arch") | sudo tee -a /etc/pacman.conf
+        (
+            echo " "
+            echo "[dtos-core-repo]"
+            echo "SigLevel = Required DatabaseOptional"
+            echo "Server = https://gitlab.com/dtos/\$repo/-/raw/main/\$arch"
+        ) | sudo tee -a /etc/pacman.conf
 }
 
 addrepo || error "Error adding DTOS repo to /etc/pacman.conf."
 
-addkeyserver() { \
+addkeyserver() {
     echo "#######################################################"
     echo "## Adding keyservers to /etc/pacman.d/gnupg/gpg.conf ##"
     echo "#######################################################"
@@ -76,7 +84,7 @@ addkeyserver() { \
 
 addkeyserver || error "Error adding keyservers to /etc/pacman.d/gnupg/gpg.conf"
 
-receive_key() { \
+receive_key() {
     local _pgpkey="A62D56CABD8DD76E"
     echo "#####################################"
     echo "## Adding PGP key $_pgpkey         ##"
@@ -88,7 +96,7 @@ receive_key() { \
 receive_key || error "Error receiving PGP key $_pgpkey"
 
 # Let's install each package listed in the pkglist.txt file.
-sudo pacman --needed --ask 4 -Sy - < pkglist.txt || error "Failed to install required packages."
+sudo pacman --needed --ask 4 -Sy - <pkglist.txt || error "Failed to install required packages."
 
 echo "############################################################"
 echo "## Installing other package. This may take a few minutes. ##"
@@ -96,22 +104,12 @@ echo "############################################################"
 
 sudo pacman -Sy curl dunst noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra npm nodejs moc neofetch htop github-cli acpid duf ncdu telegram-desktop wget tmux sd vifm ffmpegthumbnailer ueberzug diff-so-fancy gvfs xmonad xmobar xmonad-contrib libx11 libxinerama libxrandr libxinerama htop fish || error "failed"
 
-
 echo "################################################################"
 echo "##               Copying dotfiles configuration               ##"
 echo "################################################################"
-cd ~ && git clone https://github.com/angel-altuve/dotfiles.git
+git clone https://github.com/angel-altuve/dotfiles.git ~/dotfiles
 cp -r ~/dotfiles/.config ~/
 cp -r ~/dotfiles/.local/bin ~/.local/
-cp ~/dotfiles/.xinitrc ~/
-cp ~/dotfiles/.Xresources ~/
-cp ~/dotfiles/.Xmodmap ~/
-cp ~/dotfiles/.moc ~/
-cp ~/dotfiles/.nano ~/
-cp ~/dotfiles/.nanorc ~/
-cp ~/dotfiles/.bashrc ~/
-cp ~/dotfiles/.bash_profile ~/
-
 
 # Change all scripts in .local/bin to be executable.
 find $HOME/.local/bin -type f -print0 | xargs -0 chmod 775
@@ -127,8 +125,7 @@ git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
 sudo cp ~/dotfiles/xmonad/.config/xmonad/pacman-hooks/recompile-xmonad.hook /etc/pacman.d/hooks/
 sudo cp ~/dotfiles/xmonad/.config/xmonad/pacman-hooks/recompile-xmonadh.hook /etc/pacman.d/hooks/
 
-
-xmonad_recompile() { \
+xmonad_recompile() {
     echo "########################"
     echo "## Recompiling XMonad ##"
     echo "########################"
@@ -137,7 +134,7 @@ xmonad_recompile() { \
 
 xmonad_recompile || echo "Recompiling Xmonad failed!"
 
-xmonadctl_compile() { \
+xmonadctl_compile() {
     echo "####################################"
     echo "## Compiling the xmonadctl script ##"
     echo "####################################"
@@ -146,16 +143,17 @@ xmonadctl_compile() { \
 
 xmonadctl_compile || echo "Compiling the xmonadctl script failed!"
 
-            sudo chsh $USER -s "/bin/fish" && \
-            echo -e "$choice has been set as your default USER shell. \
+sudo chsh $USER -s "/bin/fish" &&
+    echo -e "$choice has been set as your default USER shell. \
                     \nLogging out is required for this take effect."
 
-  echo "####################################"
-  echo "##          install paru          ##"
-  echo "####################################"
-       cd ~ && git clone https://aur.archlinux.org/paru.git && cd paru
-       makepkg -si
-       rm -rf ../paru || error "failed delete paru folder"
+echo "####################################"
+echo "##          install paru          ##"
+echo "####################################"
+git clone https://aur.archlinux.org/paru.git ~/paru
+cd ~/paru
+makepkg -si
+rm -rf ~/paru || error "failed delete paru folder"
 
 echo "##############################"
 echo "##  has been installed! ##"
@@ -164,9 +162,9 @@ echo "##############################"
 while true; do
     read -p "you want to start xmonad? [Y/n] " yn
     case $yn in
-        [Yy]* ) startx ~/.xinitrc;;
-        [Nn]* ) break;;
-        "" ) startx ~/.xinitrc;;
-        * ) echo "Please answer yes or no.";;
+        [Yy]*) exec startx "$XDG_CONFIG_HOME/X11/xinitrc" &>"$XDG_DATA_HOME/xorg/Xsession.0.log" ;;
+        [Nn]*) break ;;
+        "") exec startx "$XDG_CONFIG_HOME/X11/xinitrc" &>"$XDG_DATA_HOME/xorg/Xsession.0.log" ;;
+        *) echo "Please answer yes or no." ;;
     esac
 done

@@ -17,8 +17,8 @@ sudo pacman -S dialog git
 **note: make sure you don't use the root user**
 
 ``` bash
-git clone https://github.com/angel-altuve/archlinux-install-script.git scripts
-cd scripts
+git clone https://github.com/angel-altuve/archlinux-install-script.git ~/scripts
+cd ~/scripts
 ./install
 ```
 

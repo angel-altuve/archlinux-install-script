@@ -117,12 +117,12 @@ cp -r ~/dotfiles/.config/X11 ~/.config
 # Change all scripts in .local/bin to be executable.
 find $HOME/.local/bin -type f -print0 | xargs -0 chmod 775
 
-echo "#########################################################"
-echo "## Installing Doom Emacs. This may take a few minutes. ##"
-echo "#########################################################"
-git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.config/emacs
-~/.config/emacs/bin/doom --force install
-~/.config/emacs/bin/doom sync
+# echo "#########################################################"
+# echo "## Installing Doom Emacs. This may take a few minutes. ##"
+# echo "#########################################################"
+# git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.config/emacs
+# ~/.config/emacs/bin/doom --force install
+# ~/.config/emacs/bin/doom sync
 
 [ ! -d /etc/pacman.d/hooks ] && sudo mkdir /etc/pacman.d/hooks
 sudo cp ~/dotfiles/xmonad/.config/xmonad/pacman-hooks/recompile-xmonad.hook /etc/pacman.d/hooks/

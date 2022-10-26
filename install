@@ -98,18 +98,21 @@ receive_key || error "Error receiving PGP key $_pgpkey"
 # Let's install each package listed in the pkglist.txt file.
 sudo pacman --needed --ask 4 -Sy - <pkglist.txt || error "Failed to install required packages."
 
-echo "############################################################"
-echo "## Installing other package. This may take a few minutes. ##"
-echo "############################################################"
-
-sudo pacman -Sy curl dunst noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra npm nodejs moc neofetch htop github-cli acpid duf ncdu telegram-desktop wget tmux sd vifm ffmpegthumbnailer ueberzug diff-so-fancy gvfs xmonad xmobar xmonad-contrib libx11 libxinerama libxrandr libxinerama htop fish || error "failed"
-
 echo "################################################################"
 echo "##               Copying dotfiles configuration               ##"
 echo "################################################################"
+
+if [ -d "$HOME/.config" ] ;
+  mkdir ~/.backup
+  cp -a ~/.config ~/.backup/ 
+fi
+
 git clone https://github.com/angel-altuve/dotfiles.git ~/dotfiles
-cp -r ~/dotfiles/.config ~/
-cp -r ~/dotfiles/.local/bin ~/.local/
+cp -r ~/dotfiles/.config/xmonad ~/.config/
+cp -r ~/dotfiles/.config/xmobar ~/.config/
+cp -r ~/dotfiles/.config/conky ~/.config/
+cp -r ~/dotfiles/.config/fish ~/.config
+cp -r ~/dotfiles/.config/X11 ~/.config
 
 # Change all scripts in .local/bin to be executable.
 find $HOME/.local/bin -type f -print0 | xargs -0 chmod 775
@@ -117,9 +120,9 @@ find $HOME/.local/bin -type f -print0 | xargs -0 chmod 775
 echo "#########################################################"
 echo "## Installing Doom Emacs. This may take a few minutes. ##"
 echo "#########################################################"
-git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
-~/.emacs.d/bin/doom --force install
-~/.emacs.d/bin/doom sync
+git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.config/emacs
+~/.config/emacs/bin/doom --force install
+~/.config/emacs/bin/doom sync
 
 [ ! -d /etc/pacman.d/hooks ] && sudo mkdir /etc/pacman.d/hooks
 sudo cp ~/dotfiles/xmonad/.config/xmonad/pacman-hooks/recompile-xmonad.hook /etc/pacman.d/hooks/
@@ -146,14 +149,6 @@ xmonadctl_compile || echo "Compiling the xmonadctl script failed!"
 sudo chsh $USER -s "/bin/fish" &&
     echo -e "$choice has been set as your default USER shell. \
                     \nLogging out is required for this take effect."
-
-echo "####################################"
-echo "##          install paru          ##"
-echo "####################################"
-git clone https://aur.archlinux.org/paru.git ~/paru
-cd ~/paru
-makepkg -si
-rm -rf ~/paru || error "failed delete paru folder"
 
 echo "##############################"
 echo "##  has been installed! ##"

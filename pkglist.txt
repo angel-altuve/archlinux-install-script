@@ -46,3 +46,4 @@ yad
 zathura
 xmonad-contrib
 xmobar
+pulseaudio-bluetooth

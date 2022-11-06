@@ -102,27 +102,40 @@ echo "################################################################"
 echo "##               Copying dotfiles configuration               ##"
 echo "################################################################"
 
-if [ -d "$HOME/.config" ] ;
+if [ -d "$HOME/.config" ]; then
   mkdir ~/.backup
-  cp -a ~/.config ~/.backup/ 
+  mv ~/.config ~/.backup/ 
 fi
 
 git clone https://github.com/angel-altuve/dotfiles.git ~/dotfiles
-cp -r ~/dotfiles/.config/xmonad ~/.config/
-cp -r ~/dotfiles/.config/xmobar ~/.config/
-cp -r ~/dotfiles/.config/conky ~/.config/
-cp -r ~/dotfiles/.config/fish ~/.config
-cp -r ~/dotfiles/.config/X11 ~/.config
+cp -r ~/dotfiles/.config ~/.config
+
+if [ ! -d "$HOME/.local/bin" ]; then
+   mkdir ~/.local/bin
+fi
+
+cp -r ~/dotfiles/.local/bin ~/.local/bin/
+
 
 # Change all scripts in .local/bin to be executable.
 find $HOME/.local/bin -type f -print0 | xargs -0 chmod 775
 
-# echo "#########################################################"
-# echo "## Installing Doom Emacs. This may take a few minutes. ##"
-# echo "#########################################################"
-# git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.config/emacs
-# ~/.config/emacs/bin/doom --force install
-# ~/.config/emacs/bin/doom sync
+
+echo "#########################################################"
+echo "##         install additional programs                 ##"
+echo "#########################################################"
+
+sudo pacman -Syu zathura-pdf-mupdf zathura-cb wget reflector youtube-dl pulseaudio pulseaudio-alsa noto-fonts mesa-amber cmatrix --needed
+
+
+
+
+echo "#########################################################"
+echo "## Installing Doom Emacs. This may take a few minutes. ##"
+echo "#########################################################"
+git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.config/emacs
+~/.config/emacs/bin/doom --force install
+~/.config/emacs/bin/doom sync
 
 [ ! -d /etc/pacman.d/hooks ] && sudo mkdir /etc/pacman.d/hooks
 sudo cp ~/dotfiles/xmonad/.config/xmonad/pacman-hooks/recompile-xmonad.hook /etc/pacman.d/hooks/
@@ -146,9 +159,26 @@ xmonadctl_compile() {
 
 xmonadctl_compile || echo "Compiling the xmonadctl script failed!"
 
-sudo chsh $USER -s "/bin/fish" &&
-    echo -e "$choice has been set as your default USER shell. \
+
+PS3='Set default user shell (enter number): '
+shells=("fish" "bash" "zsh" "quit")
+select choice in "${shells[@]}"; do
+    case $choice in
+         fish | bash | zsh)
+            sudo chsh $USER -s "/bin/$choice" && \
+            echo -e "$choice has been set as your default USER shell. \
                     \nLogging out is required for this take effect."
+            break
+            ;;
+         quit)
+            echo "User quit without changing shell."
+            break
+            ;;
+         *)
+            echo "invalid option $REPLY"
+            ;;
+    esac
+done
 
 echo "##############################"
 echo "##  has been installed! ##"

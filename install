@@ -125,7 +125,7 @@ echo "#########################################################"
 echo "##         install additional programs                 ##"
 echo "#########################################################"
 
-sudo pacman -Syu zathura-pdf-mupdf zathura-cb wget reflector youtube-dl pulseaudio pulseaudio-alsa noto-fonts mesa-amber cmatrix --needed
+sudo pacman -Syu zathura-pdf-mupdf zathura-cb wget reflector youtube-dl pulseaudio pulseaudio-alsa noto-fonts mesa-amber cmatrix --needed || error "Failed to install required packages."
 
 
 

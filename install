@@ -125,10 +125,19 @@ echo "#########################################################"
 echo "##         install additional programs                 ##"
 echo "#########################################################"
 
-sudo pacman -Syu zathura-pdf-mupdf zathura-cb wget reflector youtube-dl pulseaudio pulseaudio-alsa noto-fonts mesa-amber cmatrix --needed || error "Failed to install required packages."
+sudo pacman -Syu xorg-xinit gvfs xcb-util-cursor kvantum-qt5 acpid zathura-pdf-mupdf zathura-cb wget reflector youtube-dl alsa-utils pulseaudio pulseaudio-alsa noto-fonts papirus-icon-theme mesa-amber cmatrix ttf-ibm-plex otf-overpass --needed || error "Failed to install required packages."
+sudo pacman -Syu xorg-fonts-type1 xorg-fonts-75dpi xorg-fonts-100dpi --needed || error "Failed to install required packages."
+sudo pacman -S xarchiver unarchiver binutils gzip lha lrzip lzip lz4 p7zip tar xz bzip2 p7zip lbzip2 arj lzop cpio unrar unzip zstd zip lzip unarj zstd --needed || error "Failed to install required packages."
+sudo sudo pacman -S ffmpeg aom libde265 x265 x264 libmpeg2 xvidcore libtheora libvpx schroedinger sdl gstreamer gst-plugins-bad gst-plugins-base gst-plugins-base-libs gst-plugins-good gst-plugins-ugly xine-lib libdvdcss libdvdread dvd+rw-tools lame --needed || error "Failed to install required packages."
 
+echo "#########################################################"
+echo "##         install additional programs AUR             ##"
+echo "#########################################################"
 
+git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin
+makepkg -si
 
+yay -S ttf-juliamono nerd-fonts-jetbrains-mono catppuccin-gtk-theme-macchiato papirus-folders-catppuccin-git || error "Failed to install required packages."
 
 echo "#########################################################"
 echo "## Installing Doom Emacs. This may take a few minutes. ##"
